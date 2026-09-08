@@ -40,6 +40,22 @@ def test_signup_adds_participant(client):
     assert email in client.get("/activities").json()[activity_name]["participants"]
 
 
+def test_signup_with_invalid_email_returns_bad_request(client):
+    # Arrange
+    activity_name = "Chess Club"
+    email = 'invalid"><script>alert(1)</script>'
+
+    # Act
+    response = client.post(
+        f"/activities/{activity_name}/signup",
+        params={"email": email},
+    )
+
+    # Assert
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Invalid email address"
+
+
 def test_duplicate_signup_returns_bad_request(client):
     # Arrange
     activity_name = "Chess Club"
