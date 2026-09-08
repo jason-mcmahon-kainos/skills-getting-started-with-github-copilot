@@ -28,24 +28,31 @@ document.addEventListener("DOMContentLoaded", () => {
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
           <div class="participants">
             <strong>Participants:</strong>
-            <div class="participant-list">
-              ${details.participants
-                .map(
-                  (participant) => `
-                    <div class="participant-row">
-                      <span>${participant}</span>
-                      <button class="delete-participant" type="button" data-activity="${name}" data-email="${participant}" aria-label="Unregister ${participant}">
-                        &#x1F5D1;
-                      </button>
-                    </div>
-                  `
-                )
-                .join("")}
-            </div>
+            <div class="participant-list"></div>
           </div>
         `;
 
         activitiesList.appendChild(activityCard);
+
+        const participantList = activityCard.querySelector(".participant-list");
+        details.participants.forEach((participant) => {
+          const participantRow = document.createElement("div");
+          participantRow.className = "participant-row";
+
+          const participantName = document.createElement("span");
+          participantName.textContent = participant;
+          participantRow.appendChild(participantName);
+
+          const deleteButton = document.createElement("button");
+          deleteButton.className = "delete-participant";
+          deleteButton.type = "button";
+          deleteButton.dataset.activity = name;
+          deleteButton.dataset.email = participant;
+          deleteButton.setAttribute("aria-label", `Unregister ${participant}`);
+          deleteButton.textContent = "\u{1F5D1}";
+          participantRow.appendChild(deleteButton);
+          participantList.appendChild(participantRow);
+        });
 
         activityCard.querySelectorAll(".delete-participant").forEach((button) => {
           button.addEventListener("click", async () => {
